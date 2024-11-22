@@ -1,9 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Button, TextInput } from 'react-native-web';
+import TaskCard from './TaskCard.js';
+
 
 export default function App() {
   return (
+
     <View style={styles.container}>
       <Text style={styles.label}>App de Tarefas</Text>
       <TextInput
@@ -14,32 +17,36 @@ export default function App() {
       <TextInput style={[styles.input, styles.textArea]} placeholder='Descrição da Tarefa'
         multiline />
 
-      <view style={styles.buttonContainer}>
-        <Button title='Salvar' 
-        style={styles.buttonColor}
-        color='mediumblue'
-        onPress={
-          () =>{
-            alert('TESTADO')
-          }
-        }/>
-         </view>
-    </View>
+      <View style={styles.buttonContainer}>
+        
+        <TouchableOpacity style={styles.buttonColor}> 
+          Salvar 
+        </TouchableOpacity>
+
+         </View>
+
+         <TaskCard 
+         title={"Teste"}
+         desc={"Descrição Teste"}
+         status={"Done"}
+         onClick={()=>{
+          alert("Deletar")
+         }}
+        />
+
+      </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#008B8B',
-    alignItems: 'center',
-    justifyContent: 'top',
+    padding: 16,
+    backgroundColor: '#008B8B'
   },
   label: {
-    fontSize: 35,
+    fontSize: 24  ,
     fontWeight: 'bold',
-    alignItems: 'center',
-    justifyContent: 'center',
     marginBottom: 8
   },
   input: {
@@ -48,16 +55,24 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     fontSize: 18,
-    marginBottom: 16,
-    textAlign: 'center',
+    marginBottom: 8,
   },
   textArea: {
-    height: 100,
+    height: 50,
     textAlignVertical: 'top',
+    flex: 1
   },
   buttonContainer: {
-    marginTop: 16
+    marginTop: 8
   },
   buttonColor : {
+    padding: 15,
+    backgroundColor: "blue",
+    borderRadius: 10,
+    color: 'white',
+    backgroundColor: 'blue',
+    alignItems: 'center',
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
   },
 });
