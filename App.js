@@ -1,7 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import TaskCard from './TaskCard.js';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getRequest } from './api/Api.js';
 
 
 
@@ -59,6 +60,19 @@ export default function App() {
     setTask(updateTasks);
   };
 
+  useEffect(() => {
+    const fetchData = async () => { 
+      try {
+        const resp = await getRequest();
+        setTask(resp)
+      } catch (ex) {
+        console.error(ex)
+      }
+    };
+
+    fetchData();
+  }, [])
+
   return (
 
     <View style={styles.container}>
@@ -71,31 +85,31 @@ export default function App() {
       />
 
       {
-      alert1
-        ? 
-        <Text style={styles.errorText}>
-          Necessário informar o título.
-        </Text> 
-        : 
-        <></> 
+        alert1
+          ?
+          <Text style={styles.errorText}>
+            Necessário informar o título.
+          </Text>
+          :
+          <></>
       }
 
       <Text style={styles.label}>Tarefa Descrição</Text>
-      <TextInput 
-        style={[styles.input, styles.textArea]} 
+      <TextInput
+        style={[styles.input, styles.textArea]}
         placeholder='Descrição da Tarefa'
-        multiline 
+        multiline
         value={taskDescription}
         onChangeText={setTaskDescription}
 
       />
 
       {
-      alert2 
-        ? <Text style={styles.errorText}>
-          Descrição insuficiente &#40;Min 10 caracteres&#41;.
-        </Text> 
-        : <></> 
+        alert2
+          ? <Text style={styles.errorText}>
+            Descrição insuficiente &#40;Min 10 caracteres&#41;.
+          </Text>
+          : <></>
       }
 
       <View style={styles.buttonContainer}>
@@ -177,7 +191,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontStyle: "italic"
   },
-  scrollHeight : {
-    height: 30  
+  scrollHeight: {
+    height: 30
   }
 });
