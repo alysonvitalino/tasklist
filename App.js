@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import TaskCard from './TaskCard.js';
 import { useState, useEffect } from 'react';
-import { getRequest } from './api/Api.js';
+import { getRequest, deleteRequest, postRequest } from './api/Api.js';
 
 
 
@@ -16,21 +16,15 @@ export default function App() {
 
 
 
-  const onMessage = () => {
+  const onMessage = async () => {
 
     setAlert1(false);
     setAlert2(false);
 
     if (taskTitle !== "" && taskDescription.length >= 10) {
 
-      setTask([
-        ...task,
-        {
-          id: task.length + 1,
-          title: taskTitle,
-          desc: taskDescription
-        }
-      ])
+      let newTask = await postRequest(taskTitle, taskDescription);
+      setTask(newTask)
 
       setTaskTitle("");
       setTaskDescription("");
@@ -54,14 +48,15 @@ export default function App() {
 
   };
 
-  const deleteTask = (index) => {
-    const updateTasks = [...task];
-    updateTasks.splice(index, 1)
-    setTask(updateTasks);
+  const deleteTask = (index, id) => {
+    const updatedTasks = [...task];
+    updatedTasks.splice(index, 1);
+    deleteRequest(id);
+    setTask(updatedTasks);
   };
 
   useEffect(() => {
-    const fetchData = async () => { 
+    const fetchData = async () => {
       try {
         const resp = await getRequest();
         setTask(resp)
@@ -115,7 +110,7 @@ export default function App() {
       <View style={styles.buttonContainer}>
 
         <TouchableOpacity style={styles.buttonColor} onPress={() => onMessage()}>
-          Salvar
+         <Text style={styles.buttonText}> Salvar </Text>
         </TouchableOpacity>
 
       </View>
@@ -128,12 +123,11 @@ export default function App() {
       <ScrollView style={styles.scrollHeight}>
         {task.map((item, index) => (
           <TaskCard
+            key={item.id}
             title={item.title}
             description={item.description}
             status={"Done"}
-            onClick={() => {
-              deleteTask(index);
-            }}
+            onClick={() => deleteTask(index, item.id)}
           />
         ))}
 
@@ -178,7 +172,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'blue',
     alignItems: 'center',
     fontWeight: 'bold',
-    textTransform: 'uppercase',
   },
   separator: {
     marginTop: 16,
@@ -193,5 +186,11 @@ const styles = StyleSheet.create({
   },
   scrollHeight: {
     height: 30
-  }
+  },
+  buttonText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',
+    alignItems: 'center'
+  },
 });
